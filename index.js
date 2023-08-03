@@ -4,6 +4,10 @@ const port = 3000;
 
 app.use(express.static('public'));
 
+app.post('/', (req, res) => {
+  res.send('Got a POST request');
+});
+
 app.get('/', (req, res) => {
     res.send(`
     <!DOCTYPE html>
@@ -23,16 +27,26 @@ app.get('/', (req, res) => {
     </html>`);
 });
 
-app.post('/', (req, res) => {
-  res.send('Got a POST request');
-});
-
 app.get('/about', (req, res) => {
   res.send('About page!');
 });
 
-app.get('/services', (req, res) => {
+app.all('/secret', (req, res, next) => {
+  console.log('Accessing the secret section ...');
+  console.log(req.method);
+  res.send('SECRET!!!');
+});
+
+app.get('/services?', (req, res) => {
   res.send('Services list page!');
+});
+
+app.get('/users/:userId/books/:bookId', (req, res) => {
+  console.log(req.params);
+  if (req.params.bookId > 1000) {
+    return res.send('ERROR: tokia knyga neegzistuoja');
+  }
+  res.send(req.params);
 });
 
 app.get('*', (req, res) => {
